@@ -27,7 +27,7 @@ func UserAuthMiddleware(skipper ...SkipperFunc) gin.HandlerFunc {
 			    return
 			}
 			exptimestamp, _ := strconv.ParseInt(userInfo["exp"], 10, 64)
-      exp := time.Unix(exptimestamp, 0)
+      		exp := time.Unix(exptimestamp, 0)
 			ok=exp.After(time.Now())
 			if !ok {
 				common.ResFailCode(c,"token 过期",50014)

@@ -15,16 +15,18 @@ func CasbinMiddleware(skipper ...SkipperFunc) gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		// 用户ID
+		// 从context中获取uid
 		uid, isExit := c.Get(common.USER_ID_Key)
 		if !isExit {
 			common.ResFailCode(c, "token 无效3", 50008)
 			return
 		}
+		// 如果是admin则放行
 		if convert.ToUint64(uid) == common.SUPER_ADMIN_ID {
 			c.Next()
 			return
 		}
+
 		p := c.Request.URL.Path
 		m := c.Request.Method
 		if b, err := common.CsbinCheckPermission(convert.ToString(uid), p, m); err != nil {

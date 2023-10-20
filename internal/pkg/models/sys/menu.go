@@ -10,6 +10,7 @@ import (
 )
 
 // 菜单
+// MARK
 type Menu struct {
 	basemodel.Model
 	Status      uint8  `gorm:"column:status;type:tinyint(1);not null;" json:"status" form:"status"`             // 状态(1:启用 2:不启用)
