@@ -153,6 +153,7 @@ func (Role) SetRole(c *gin.Context) {
 		common.ResErrSrv(c, err)
 		return
 	}
+	// 当角色变化时异步对casbin策略进行更新
 	go common.CsbinSetRolePermission(roleid)
 	common.ResSuccessMsg(c)
 }

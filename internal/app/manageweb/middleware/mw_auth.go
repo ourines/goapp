@@ -20,30 +20,37 @@ func UserAuthMiddleware(skipper ...SkipperFunc) gin.HandlerFunc {
 			return
 		}
 		var uuid string
+		// 检查请求头中得到token 
 		if t := c.GetHeader(common.TOKEN_KEY); t != "" {
 			userInfo,ok:=jwt.ParseToken(t)
 			if !ok {
 					common.ResFailCode(c,"token 无效",50008)
 			    return
 			}
+			// 检查token是否过期
 			exptimestamp, _ := strconv.ParseInt(userInfo["exp"], 10, 64)
       		exp := time.Unix(exptimestamp, 0)
-			ok=exp.After(time.Now())
+			ok = exp.After(time.Now())
+			// 过期处理
 			if !ok {
 				common.ResFailCode(c,"token 过期",50014)
 				return
 			}
-			uuid=userInfo["uuid"]
+			uuid = userInfo["uuid"]
 		}
 
 		if uuid != "" {
-			//查询用户ID
-			val,err:=cache.Get([]byte(uuid))
-			if err!=nil {
+			// 从缓存中查找
+			val, err := cache.Get([]byte(uuid))
+
+			if err != nil {
+				// 缓存中没有
 				common.ResFailCode(c,"token 无效",50008)
 				return
 			}
-			userID:=convert.ToUint(string(val))
+			// 转成string
+			userID := convert.ToUint(string(val))
+			// 设置context
 			c.Set(common.USER_UUID_Key, uuid) 
 			c.Set(common.USER_ID_Key, userID) 
 		}

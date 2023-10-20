@@ -77,7 +77,7 @@ func (User) Login(c *gin.Context) {
 	// 发至页面
 	resData := make(map[string]string)
 	resData["token"] = token
-	//casbin 处理
+	// 用户登陆后将对应的权限写入casbin， rid
 	err = common.CsbinAddRoleForUser(user.ID)
 	if err != nil {
 		common.ResErrSrv(c, err)
